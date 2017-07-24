@@ -12,6 +12,7 @@
 	<svg id="svg" xmlns="http://www.w3.org/2000/svg"></svg>
 
 	<script>
+    var time_pressed = 0;
 	function Circle(cx, cy, html_id)
 	{
 		var html_id = html_id;
@@ -31,9 +32,9 @@
 			var circle = makeSVG('circle', 
 				{ 	cx: this.info.cx,
 				  	cy: this.info.cy,
-				  	r:  10,
+				  	r:  10 + time_pressed/100,
 				  	id: html_id,
-				  	style: "fill: black"
+				  	style: "fill: #" + Math.floor(Math.random()*9)+ Math.floor(Math.random()*9)+ Math.floor(Math.random()*9)
 				});
 			document.getElementById('svg').appendChild(circle);
 		}
@@ -87,10 +88,26 @@
 	}
 	var playground = new PlayGround();
 	setInterval(playground.loop, 15);
-	document.onclick = function(e) {
-		playground.createNewCircle(e.x,e.y);
-	}
-	
+	// document.onclick = function(e) {
+	// 	playground.createNewCircle(e.x,e.y);
+	// }
+
+  	( function(){
+		var mousedown_time;
+		function getTime(){
+			var date = new Date();
+			return date.getTime();
+		}
+		document.onmousedown = function(e){
+			mousedown_time = getTime();
+		}
+		document.onmouseup = function(e){
+			time_pressed = getTime() - mousedown_time;
+      playground.createNewCircle(e.x,e.y);
+			console.log('You held your mouse down for', time_pressed, 'miliseconds.');
+		}
+		//technically we don't even need the mousedown variable but we're leaving it there for now..
+	})();
 	</script>
 
 </body>
